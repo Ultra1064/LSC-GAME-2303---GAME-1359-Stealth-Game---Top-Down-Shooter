@@ -1016,7 +1016,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: bebe8fe5eff3c7a4e82fbb299811ca23, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 9a1bf4bb032d27a4dba2c89315893f2d, type: 2}
   m_BuildHeightMesh: 0
 --- !u!1 &410087039
 GameObject:
@@ -2151,7 +2151,6 @@ MonoBehaviour:
   controllerRotateSmooth: 1000
   isGamepad: 0
   isDead: 0
-  sneak: 0
 --- !u!4 &1223259699 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c3f0da358700e104aa44ca24c675c8be, type: 3}
