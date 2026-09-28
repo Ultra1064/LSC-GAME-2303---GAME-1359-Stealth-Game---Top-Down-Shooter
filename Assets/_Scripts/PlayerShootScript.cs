@@ -5,6 +5,7 @@ public class PlayerShootScript : MonoBehaviour
 {
     TS_Inputs _inputs;
     PlayerController _ctrl;
+    SoundManager audio;
 
     [Header("Spawn Setup")]
     public Transform bulletSpawnPoint;
@@ -26,6 +27,7 @@ public class PlayerShootScript : MonoBehaviour
     {
         _inputs = new TS_Inputs();
         _ctrl = GetComponent<PlayerController>();
+        audio = FindAnyObjectByType<SoundManager>();
         canShoot = true;
     }
 
@@ -57,11 +59,13 @@ public class PlayerShootScript : MonoBehaviour
             case 1: //Regular bullets
                 _shot = Instantiate(baseBullet, bulletSpawnPoint.position, bulletSpawnPoint.rotation) as Rigidbody;
                 _shot.AddForce(bulletSpawnPoint.forward * shotForce, ForceMode.Impulse);
+                audio.PlaySound3D("Bullet", bulletSpawnPoint.position);
                 yield return new WaitForSeconds(shootSpeed);
                 break;
             case 2: //Big piercing slow shooting bullets
                 _shot = Instantiate(bigBullet, bulletSpawnPoint.position, bulletSpawnPoint.rotation) as Rigidbody;
                 _shot.AddForce(bulletSpawnPoint.forward * (shotForce * 0.75f), ForceMode.Impulse);
+                audio.PlaySound3D("BigBullet", bulletSpawnPoint.position);
                 yield return new WaitForSeconds(shootSpeed * 4);
                 break;
             case 3: //Spread
@@ -75,6 +79,7 @@ public class PlayerShootScript : MonoBehaviour
                     _shot = Instantiate(baseBullet, bulletSpawnPoint.position, Quaternion.LookRotation(direction)) as Rigidbody;
                     _shot.AddForce(direction  * shotForce, ForceMode.Impulse);
                 }
+                audio.PlaySound3D("Bullet", bulletSpawnPoint.position);
                 yield return new WaitForSeconds(shootSpeed);
                 break;
         }

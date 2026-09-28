@@ -1,18 +1,21 @@
 using UnityEngine;
-using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     public GameObject enemy;
+    private TS_Inputs inputs;
+    private bool paused;
+    private GameObject player;
 
     [Header("Spawn System")]
     public Transform[] spawnPoints;
     public int activeEnemyCount;
     public int maxEnemyCount;
     public int enemyKills = 0;
-    public int upgradeThreshold = 5;
-    public float spawnSpeed = 2f;
+    public int upgradeThreshold = 10;
+    public float spawnSpeed = 0.5f;
     public float spawnStart = 3f;
 
     [Header("Panels")]
@@ -22,13 +25,36 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
-        if(instance == null)
+        paused = false;
+        player = FindAnyObjectByType<PlayerController>().gameObject;
+        inputs = new TS_Inputs();
+        if (instance == null)
             instance = this;
     }
 
     private void Start()
     {
         InvokeRepeating("SpawnEnemy", spawnStart, spawnSpeed);
+    }
+
+    private void Update()
+    {
+        if (inputs.Player.Pause.IsPressed())
+        {
+            if (!paused)
+            {
+                PauseGame();
+            }
+        }
+    }
+
+    private void OnEnable()
+    {
+        inputs.Enable();
+    }
+    private void OnDisable()
+    {
+        inputs.Disable();
     }
 
     public void SpawnEnemy()
@@ -45,25 +71,51 @@ public class GameManager : MonoBehaviour
 
     public void PauseGame()
     {
+        paused = true;
         pausePanel.SetActive(true);
+        player.SetActive(false);
         Time.timeScale = 0.0f;
     }
     public void UnpauseGame()
     {
+        paused = false;
         pausePanel.SetActive(false);
+        player.SetActive(true);
         Time.timeScale = 1.0f;
     }
-
+    public void RestartGame()
+    {
+        paused = false;
+        gameOverPanel.SetActive(false);
+        Time.timeScale = 1.0f;
+        SceneManager.LoadScene("MainGame");
+    }
+    public void TitleScreen()
+    {
+        gameOverPanel.SetActive(false);
+        Time.timeScale = 1.0f;
+        SceneManager.LoadScene("TitleScreen");
+    }
+    public void GameOver()
+    {
+        paused = true;
+        gameOverPanel.SetActive(true);
+        player.SetActive(false);
+        Time.timeScale = 0.0f;
+    }
     private void OpenUpgradePanel()
     {
+        paused = true;
         upgradePanel.SetActive(true);
         Time.timeScale = 0.0f;
     }
 
     public void CloseUpgradePanel()
     {
+        paused = false;
         upgradePanel.SetActive(false);
         Time.timeScale = 1.0f;
+        enemyKills = 0;
     }
 
     public void EnemyKillCount()
